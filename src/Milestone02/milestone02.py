@@ -21,7 +21,7 @@ def inputParser(filename: str) -> json:
 
 def main () -> None:
 
-    ip_file = "D:/22PW29/wafer-processing-optimization/Input/Milestone1.json"
+    ip_file = "D:/22PW29/wafer-processing-optimization/Input/Milestone2a.json"
 
     data = None
 
@@ -136,7 +136,7 @@ def main () -> None:
                             "end_time":  max(machine_curr_time[mach] + ptime, wafer_ptime[wid] + ptime)
                         }
                     )
-                    machine_curr_time[mach] +=  max(machine_curr_time[mach] + ptime, wafer_ptime[wid] + ptime)
+                    machine_curr_time[mach] += ptime
                     wafer_ptime[wid] += ptime
                     w_processed[mach] += 1
 
