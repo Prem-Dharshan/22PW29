@@ -88,10 +88,53 @@ def main () -> None:
         w_s[wid] = list(val["processing_times"].keys())
     print("\nW_S: ", w_s)
 
-    while all(w_s.values()):
-        for wid, sts in w_s.items():
-            queue.append((wid, sts[0]))
-            w_s[wid].pop(0)
+    # while all(w_s.values()):
+    #     for wid, sts in w_s.items():
+    #         queue.append((wid, sts[0]))
+    #         w_s[wid].pop(0)
+
+
+    w1 = []
+    w2 = []
+
+    for ws, wsval in w_s.items():
+        s = ws.split('-')
+        if "W1" == s[0]:
+            w1.append(ws)
+        else:
+            w2.append(ws)
+    
+    print("W1: ", w1)
+    print("W2: ", w2)
+
+
+    while w1 and w2:
+        queue.append((w1.pop(0), 'S1'))
+        queue.append((w2.pop(0), 'S1'))
+    
+    while w1: queue.append((w1.pop(0), 'S1'))
+    while w2: queue.append((w2.pop(0), 'S1'))
+
+    w1 = []
+    w2 = []
+
+    for ws, wsval in w_s.items():
+        s = ws.split('-')
+        if "W1" == s[0]:
+            w1.append(ws)
+        else:
+            w2.append(ws)
+    
+    print("W1: ", w1)
+    print("W2: ", w2)
+
+
+    while w1 and w2:
+        queue.append((w1.pop(0), 'S2'))
+        queue.append((w2.pop(0), 'S2'))
+    
+    while w1: queue.append((w1.pop(0), 'S2'))
+    while w2: queue.append((w2.pop(0), 'S2'))
 
     print("\nQueue: ", queue)
 
@@ -110,7 +153,6 @@ def main () -> None:
             n += 1
             if (n > 2):
                 n = 0
-        print("Popped, ", wid, sid)
                 
         wval = wafers[wid]
         ptime = wval["processing_times"][sid]
@@ -136,7 +178,7 @@ def main () -> None:
                             "end_time":  max(machine_curr_time[mach] + ptime, wafer_ptime[wid] + ptime)
                         }
                     )
-                    machine_curr_time[mach] += ptime
+                    machine_curr_time[mach] +=  max(machine_curr_time[mach] + ptime, wafer_ptime[wid] + ptime)
                     wafer_ptime[wid] += ptime
                     w_processed[mach] += 1
 
@@ -145,7 +187,7 @@ def main () -> None:
     print("\n\nSchedule: ", schedule)
     
     json_object = json.dumps(schedule, indent=4)
-    with open("./output.json", "w") as outfile:
+    with open("./output2a.json", "w") as outfile:
         outfile.write(json_object)
 
     return None
