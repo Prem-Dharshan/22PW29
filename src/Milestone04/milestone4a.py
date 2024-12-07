@@ -23,6 +23,7 @@ def cooldown_machines(mid, machines, curr_m_p, machine_curr_time, params):
 
 
 def assign_wafer_to_machine(wid, sid, mach, wafer_ptime, machine_curr_time, w_processed, curr_m_p, params, ptime, steps, machines):
+    # Calc start and end time beforehand
     start_time = max(machine_curr_time[mach], wafer_ptime[wid])
     end_time = start_time + ptime
 
@@ -34,6 +35,7 @@ def assign_wafer_to_machine(wid, sid, mach, wafer_ptime, machine_curr_time, w_pr
         "end_time": end_time
     }
 
+    # update after process
     machine_curr_time[mach] = end_time
     wafer_ptime[wid] = end_time
     w_processed[mach] += 1
@@ -41,7 +43,7 @@ def assign_wafer_to_machine(wid, sid, mach, wafer_ptime, machine_curr_time, w_pr
     if w_processed[mach] >= machines[mach]["n"]:
         for p in params:
             curr_m_p[mach][p] += machines[mach]['fluctuation'][p]
-        # Reset the processed count after fluctuation
+        # reset the processed count after fluctuation
         w_processed[mach] = 0 
 
     return schedule_entry
@@ -85,9 +87,11 @@ def main():
     while queue:
         wid, sid = queue.popleft()
         
+        # find a machine
         mid = step_machine[sid]
         mach = find_compliant_machine(mid, sid, steps, curr_m_p, machines, params)
 
+        # since machine is hot, cool it
         if mach is None:
             cooldown_machines(mid, machines, curr_m_p, machine_curr_time, params)
             queue.append((wid, sid))
@@ -96,7 +100,7 @@ def main():
         wval = wafers[wid]
         ptime = wval["processing_times"][sid]
 
-        # Validate machine params before process the wafer
+        # validate machine params before process the wafer
         while not all(steps[sid]['parameters'][p][0] <= curr_m_p[mach][p] <= steps[sid]['parameters'][p][1] for p in params):
             cooldown_machines([mach], machines, curr_m_p, machine_curr_time, params)
 
