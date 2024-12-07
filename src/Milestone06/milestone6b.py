@@ -65,7 +65,7 @@ def process_dependencies(wafers, steps):
     return sorted_wafers
 
 def main():
-    ip_file = "D:/22PW29/wafer-processing-optimization/Input/Milestone6a.json"
+    ip_file = "D:/22PW29/wafer-processing-optimization/Input/Milestone6b.json"
 
     data = input_parser(ip_file)
 
@@ -128,7 +128,7 @@ def main():
 
     schedule = {"schedule": schedule}
 
-    with open("./output6a.json", "w") as outfile:
+    with open("./output6b.json", "w") as outfile:
         json.dump(schedule, outfile, indent=4)
 
 if __name__ == '__main__':
